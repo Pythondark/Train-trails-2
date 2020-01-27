@@ -16,6 +16,9 @@ public class ShootIfGrabbed : MonoBehaviour
     [SerializeField] Text bulletText;
     [SerializeField] AudioClip shootingAudio;
 
+    private bool aimingGun = false;
+    Health target;
+
     //VibrationManager vibrationManager;
 
 
@@ -40,34 +43,47 @@ public class ShootIfGrabbed : MonoBehaviour
             bulletText.text = "";
         }
         
-        if(ovrGrabbable.isGrabbed && OVRInput.GetDown(shootingButton, ovrGrabbable.grabbedBy.GetController()) && maxNumberOfBullet > 0)
+        if(ovrGrabbable.isGrabbed && OVRInput.GetDown(shootingButton, ovrGrabbable.grabbedBy.GetController()))
         {
             // Shoot!
-            // DONT DO THIS:: OVRInput.SetControllerVibration(0.5f, 0.5f, ovrGrabbable.grabbedBy.GetController());
-            //vibrationManager.TriggerVibration(shootingAudio, ovrGrabbable.grabbedBy.GetController());
+            ShootGun();
+        }
 
+        if (aimingGun) {AimGun();}
+    }
 
-            //OVRInput.SetControllerVibration()
-
-            /* DEPRECIATID? ===
-            OVRHapticsClip clip = new OVRHapticsClip(shootingAudio);
-
-            if (ovrGrabbable.grabbedBy.GetController() == OVRInput.Controller.LTouch)
-            {
-                OVRHaptics.LeftChannel.Preempt(clip);
-            }
-            else if (ovrGrabbable.grabbedBy.GetController() == OVRInput.Controller.RTouch)
-            {
-                OVRHaptics.RightChannel.Preempt(clip);
-            }
-            ==== */
-
-            GetComponent<AudioSource>().PlayOneShot(shootingAudio);            
+    public void ShootGun()
+    {
+        //if(maxNumberOfBullet > 0)
+        //{
+            GetComponent<AudioSource>().PlayOneShot(shootingAudio);
             GetComponent<ContinuousHaptics>().Play();
             simpleShoot.TriggerShoot();
             maxNumberOfBullet--;
             if (bulletText == null) { return; }
             bulletText.text = maxNumberOfBullet.ToString();
-        }
+        //}
+        
+    }
+
+    public void StartAiming()
+    {
+        aimingGun = true;
+    }
+
+    public void StopAiming()
+    {
+        aimingGun = false;
+    }
+
+    public void SetTarget(Health target)
+    {
+        this.target = target;
+    }
+
+    private void AimGun()
+    {
+        if (target == null) {return; }
+        transform.LookAt(target.GetTargetLocation());
     }
 }

@@ -6,6 +6,7 @@ public class Door : MonoBehaviour
 {    
     [SerializeField] int doorKeyCode = 0001;
     [SerializeField] bool locked = false;
+    [SerializeField] GameObject doorGrabbableHandler;
 
     // Start is called before the first frame update
     void Start()
@@ -21,6 +22,14 @@ public class Door : MonoBehaviour
     //        GetComponent<Rigidbody>().constraints.
     //    }
     //}
+
+    private void OnCollisionEnter(Collision other) 
+    {
+        if (other.gameObject.tag == "Player")
+        {
+            doorGrabbableHandler.GetComponent<DoorGrabbable>().ForceRelease();
+        }
+    }
 
     public void Lock()
     {

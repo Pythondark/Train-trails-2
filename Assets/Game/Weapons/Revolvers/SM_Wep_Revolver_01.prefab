@@ -284,6 +284,7 @@ GameObject:
   - component: {fileID: 3936069323886941200}
   - component: {fileID: 6041639660746935640}
   - component: {fileID: 5921110274195386073}
+  - component: {fileID: 5233414953759946510}
   m_Layer: 0
   m_Name: SM_Wep_Revolver_01
   m_TagString: Untagged
@@ -647,6 +648,18 @@ MonoBehaviour:
   Loop: 0
   SyncAudioSource: {fileID: 3936069323886941200}
   PlayOnAwake: 0
+--- !u!114 &5233414953759946510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6450195903603433562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 391638bcab386e143b4075470c8be2aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6451058558955998242
 GameObject:
   m_ObjectHideFlags: 0

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using RPG.Movement;
 using RPG.Core;
+using RPG.Combat;
 using System;
 
 namespace RPG.Control
@@ -13,20 +14,28 @@ namespace RPG.Control
         [SerializeField] [Range(0, 1)] float patrolSpeedFraction = 0.2f;
         [SerializeField] float waypointDwellTime = 3f;
         [SerializeField] float waypointTolerance = 1f;
+        [SerializeField] float chaseDistance = 5f;
+
+        [SerializeField] bool chaseDistanceGizmo = true;
+
 
         Mover mover;
         Health health;
+        GameObject player;
+        Fighter fighter;
 
         Vector3 guardPosition;
+        Vector3 lastKnownPlayerPosition;
         float timeSinceArrivedAtWaypoint = Mathf.Infinity;
         int currentWaypointIndex = 0;
 
         // Start is called before the first frame update
         void Start()
         {
+            fighter = GetComponent<Fighter>();
             mover = GetComponent<Mover>();
             health = GetComponent<Health>();
-
+            player = GameObject.FindWithTag("Player");
             guardPosition = transform.position;
         }
 
@@ -35,10 +44,20 @@ namespace RPG.Control
         {
             if (health.IsDead()) return;
 
-            PatrolBehaviour();
-
-
+            if (InAttackRangeOfPlayer() && fighter.CanAttack(player))
+            {
+                // Attack state
+                AttackBehaviour();
+            }
+         
             UpdateTimers();
+        }
+
+        private void AttackBehaviour()
+        {
+            //timeSinceLastSawPlayer = 0f;
+            fighter.AttackPlayer(player);
+            lastKnownPlayerPosition = player.transform.position;
         }
 
 
@@ -83,10 +102,28 @@ namespace RPG.Control
             return patrolPath.GetWaypoint(currentWaypointIndex);
         }
 
+        private bool InAttackRangeOfPlayer()
+        {
+            return Vector3.Distance(transform.position, player.transform.position) < chaseDistance;
+        }
+
+
+
+
         private void UpdateTimers()
         {
             //timeSinceLastSawPlayer += Time.deltaTime;
             timeSinceArrivedAtWaypoint += Time.deltaTime;
+        }
+
+        // Called by Unity
+        private void OnDrawGizmosSelected()
+        {
+            if (chaseDistanceGizmo)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawWireSphere(transform.position, chaseDistance);
+            }            
         }
 
     }

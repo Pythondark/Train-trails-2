@@ -8,6 +8,7 @@ namespace RPG.Core
     public class Health : MonoBehaviour
     {
         [SerializeField] float healthPoints = 100f;
+        [SerializeField] GameObject gunTarget;
 
         bool isDead = false;
 
@@ -44,6 +45,11 @@ namespace RPG.Core
             {
                 collider.enabled = false;
             }
+        }
+
+        public Transform GetTargetLocation()
+        {
+            return gunTarget.transform;
         }
 
         // === SAVING ===
